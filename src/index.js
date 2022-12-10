@@ -2,7 +2,7 @@ import './css/styles.css';
 import debounce from 'lodash.debounce';
 import { FetchCountries } from './js/fetchCountries';
 import { MarkupUpdate } from './js/markup';
-import Notiflix from 'notiflix';
+import { Notify } from 'notiflix';
 
 const serchCountry = new FetchCountries();
 const markupUpdate = new MarkupUpdate();
@@ -20,13 +20,16 @@ const onSearch = e => {
     return markupClear();
   }
   serchCountry.searchQuery = e.target.value;
-  serchCountry.fetchCountry().then(data => {
-    return data.length >= 1 && data.length <= 10
-      ? markupAdd(data)
-      : Notiflix.Notify.info(
-          'Too many matches found. Please enter a more specific name.'
-        );
-  });
+  serchCountry
+    .fetchCountry()
+    .then(data => {
+      return data.length >= 1 && data.length <= 10
+        ? markupAdd(data)
+        : Notify.info(
+            'Too many matches found. Please enter a more specific name.'
+          );
+    })
+    .catch(error => console.log(error));
   markupClear();
 };
 
